@@ -67,3 +67,44 @@ for
 		state[i] = thinking;
 	}
 } // end of monitor
+#include <stdio.h>
+#include <pthread.h>
+#include "your_monitor.h" // Include the monitor definition
+
+void* philosopher(void* num) {
+    int philosopher_num = *((int*)num);
+
+    while (1) {
+        // Think
+        printf("Philosopher %d is thinking.\n", philosopher_num);
+
+        // Pick up chopsticks
+        DP.Pickup(philosopher_num);
+        
+        // Eat
+        printf("Philosopher %d is eating.\n", philosopher_num);
+
+        // Put down chopsticks
+        DP.Putdown(philosopher_num);
+    }
+
+    return NULL;
+}
+
+int main() {
+    pthread_t philosophers[NUM_PHILOSOPHERS];
+    int i;
+    
+    // Create philosopher threads
+    for (i = 0; i < NUM_PHILOSOPHERS; i++) {
+        pthread_create(&philosophers[i], NULL, philosopher, &i);
+    }
+
+    // Wait for philosopher threads to finish (optional)
+    for (i = 0; i < NUM_PHILOSOPHERS; i++) {
+        pthread_join(philosophers[i], NULL);
+    }
+
+    return 0;
+}
+
